@@ -1,0 +1,26 @@
+[
+  {
+    "ticker": "AAPL",
+    "quantity": 10,
+    "cost_basis": 150,
+    "date_purchased": "2024-06-01"
+  },
+  {
+    "ticker": "TSLA",
+    "quantity": 5,
+    "cost_basis": 600,
+    "date_purchased": "2024-05-10"
+  },
+  {
+    "ticker": "GOOGL",
+    "quantity": 2,
+    "cost_basis": 2500,
+    "date_purchased": "2024-04-15"
+  },
+  {
+    "ticker": "MSFT",
+    "quantity": 15,
+    "cost_basis": 300,
+    "date_purchased": "2024-03-20"
+  }
+]

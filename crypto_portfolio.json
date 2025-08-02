@@ -1,0 +1,14 @@
+[
+  {
+    "ticker": "BTC-USD",
+    "quantity": 0.5,
+    "cost_basis": 45000,
+    "date_purchased": "2024-01-15"
+  },
+  {
+    "ticker": "ETH-USD",
+    "quantity": 2.5,
+    "cost_basis": 3200,
+    "date_purchased": "2024-02-10"
+  }
+]
