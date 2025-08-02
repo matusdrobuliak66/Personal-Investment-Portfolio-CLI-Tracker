@@ -114,7 +114,7 @@ The application uses mock price data for demonstration purposes. In a production
 
 ## Development
 
-To run in development mode:
+To run the application during development (without building a release binary):
 
 ```bash
 cargo run -- balances portfolio.json
