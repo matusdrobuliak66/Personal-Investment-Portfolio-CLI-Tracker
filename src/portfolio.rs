@@ -72,3 +72,191 @@ impl Portfolio {
             .collect()
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::collections::HashMap;
+    use std::fs;
+    use tempfile::tempdir;
+
+    fn create_test_holding() -> Holding {
+        Holding {
+            ticker: "AAPL".to_string(),
+            quantity: 10.0,
+            cost_basis: 150.0,
+            date_purchased: "2023-01-01".to_string(),
+        }
+    }
+
+    fn create_test_portfolio() -> Portfolio {
+        Portfolio {
+            holdings: vec![
+                Holding {
+                    ticker: "AAPL".to_string(),
+                    quantity: 10.0,
+                    cost_basis: 150.0,
+                    date_purchased: "2023-01-01".to_string(),
+                },
+                Holding {
+                    ticker: "TSLA".to_string(),
+                    quantity: 5.0,
+                    cost_basis: 200.0,
+                    date_purchased: "2023-02-01".to_string(),
+                },
+            ],
+        }
+    }
+
+    #[test]
+    fn test_holding_with_price_current_value() {
+        let holding = create_test_holding();
+        let holding_with_price = HoldingWithPrice {
+            holding,
+            current_price: 175.0,
+        };
+
+        assert_eq!(holding_with_price.current_value(), 1750.0); // 10 * 175
+    }
+
+    #[test]
+    fn test_holding_with_price_total_cost() {
+        let holding = create_test_holding();
+        let holding_with_price = HoldingWithPrice {
+            holding,
+            current_price: 175.0,
+        };
+
+        assert_eq!(holding_with_price.total_cost(), 1500.0); // 10 * 150
+    }
+
+    #[test]
+    fn test_holding_with_price_gain_loss() {
+        let holding = create_test_holding();
+        let holding_with_price = HoldingWithPrice {
+            holding,
+            current_price: 175.0,
+        };
+
+        assert_eq!(holding_with_price.gain_loss(), 250.0); // 1750 - 1500
+    }
+
+    #[test]
+    fn test_holding_with_price_gain_loss_percentage() {
+        let holding = create_test_holding();
+        let holding_with_price = HoldingWithPrice {
+            holding,
+            current_price: 175.0,
+        };
+
+        let expected_percentage = (250.0 / 1500.0) * 100.0;
+        assert!((holding_with_price.gain_loss_percentage() - expected_percentage).abs() < 0.001);
+    }
+
+    #[test]
+    fn test_holding_with_price_gain_loss_percentage_zero_cost() {
+        let mut holding = create_test_holding();
+        holding.cost_basis = 0.0;
+        let holding_with_price = HoldingWithPrice {
+            holding,
+            current_price: 175.0,
+        };
+
+        assert_eq!(holding_with_price.gain_loss_percentage(), 0.0);
+    }
+
+    #[test]
+    fn test_portfolio_get_tickers() {
+        let portfolio = create_test_portfolio();
+        let tickers = portfolio.get_tickers();
+
+        assert_eq!(tickers.len(), 2);
+        assert!(tickers.contains(&"AAPL".to_string()));
+        assert!(tickers.contains(&"TSLA".to_string()));
+    }
+
+    #[test]
+    fn test_portfolio_holdings_with_prices() {
+        let portfolio = create_test_portfolio();
+        let mut prices = HashMap::new();
+        prices.insert("AAPL".to_string(), 175.0);
+        prices.insert("TSLA".to_string(), 250.0);
+
+        let holdings_with_prices = portfolio.holdings_with_prices(&prices);
+
+        assert_eq!(holdings_with_prices.len(), 2);
+        
+        let aapl_holding = holdings_with_prices.iter()
+            .find(|h| h.holding.ticker == "AAPL")
+            .unwrap();
+        assert_eq!(aapl_holding.current_price, 175.0);
+        
+        let tsla_holding = holdings_with_prices.iter()
+            .find(|h| h.holding.ticker == "TSLA")
+            .unwrap();
+        assert_eq!(tsla_holding.current_price, 250.0);
+    }
+
+    #[test]
+    fn test_portfolio_holdings_with_prices_missing_ticker() {
+        let portfolio = create_test_portfolio();
+        let mut prices = HashMap::new();
+        prices.insert("AAPL".to_string(), 175.0);
+        // TSLA price is missing
+
+        let holdings_with_prices = portfolio.holdings_with_prices(&prices);
+
+        let tsla_holding = holdings_with_prices.iter()
+            .find(|h| h.holding.ticker == "TSLA")
+            .unwrap();
+        assert_eq!(tsla_holding.current_price, 0.0); // Should default to 0.0
+    }
+
+    #[test]
+    fn test_portfolio_load_from_file() {
+        let dir = tempdir().unwrap();
+        let file_path = dir.path().join("test_portfolio.json");
+
+        let test_data = r#"[
+            {
+                "ticker": "AAPL",
+                "quantity": 10.0,
+                "cost_basis": 150.0,
+                "date_purchased": "2023-01-01"
+            },
+            {
+                "ticker": "TSLA",
+                "quantity": 5.0,
+                "cost_basis": 200.0,
+                "date_purchased": "2023-02-01"
+            }
+        ]"#;
+
+        fs::write(&file_path, test_data).unwrap();
+
+        let portfolio = Portfolio::load_from_file(&file_path).unwrap();
+
+        assert_eq!(portfolio.holdings.len(), 2);
+        assert_eq!(portfolio.holdings[0].ticker, "AAPL");
+        assert_eq!(portfolio.holdings[0].quantity, 10.0);
+        assert_eq!(portfolio.holdings[1].ticker, "TSLA");
+        assert_eq!(portfolio.holdings[1].quantity, 5.0);
+    }
+
+    #[test]
+    fn test_portfolio_load_from_file_invalid_json() {
+        let dir = tempdir().unwrap();
+        let file_path = dir.path().join("invalid_portfolio.json");
+
+        fs::write(&file_path, "invalid json").unwrap();
+
+        let result = Portfolio::load_from_file(&file_path);
+        assert!(result.is_err());
+    }
+
+    #[test]
+    fn test_portfolio_load_from_file_nonexistent() {
+        let result = Portfolio::load_from_file("nonexistent_file.json");
+        assert!(result.is_err());
+    }
+}

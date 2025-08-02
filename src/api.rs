@@ -107,3 +107,73 @@ async fn fetch_real_price(ticker: &str) -> Result<f64> {
         anyhow::bail!("No price data found for ticker: {}", ticker);
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_get_mock_prices_contains_expected_tickers() {
+        let prices = get_mock_prices();
+        
+        assert!(prices.contains_key("AAPL"));
+        assert!(prices.contains_key("TSLA"));
+        assert!(prices.contains_key("BTC-USD"));
+        assert!(prices.contains_key("ETH-USD"));
+        
+        assert_eq!(*prices.get("AAPL").unwrap(), 170.0);
+        assert_eq!(*prices.get("BTC-USD").unwrap(), 95000.0);
+    }
+
+    #[tokio::test]
+    async fn test_fetch_current_prices_with_known_tickers() {
+        let tickers = vec!["AAPL".to_string(), "TSLA".to_string()];
+        let result = fetch_current_prices(&tickers).await;
+        
+        assert!(result.is_ok());
+        let prices = result.unwrap();
+        
+        assert_eq!(prices.len(), 2);
+        assert!(prices.contains_key("AAPL"));
+        assert!(prices.contains_key("TSLA"));
+        assert_eq!(*prices.get("AAPL").unwrap(), 170.0);
+        assert_eq!(*prices.get("TSLA").unwrap(), 700.0);
+    }
+
+    #[tokio::test]
+    async fn test_fetch_current_prices_with_unknown_ticker() {
+        let tickers = vec!["UNKNOWN_TICKER".to_string()];
+        let result = fetch_current_prices(&tickers).await;
+        
+        assert!(result.is_ok());
+        let prices = result.unwrap();
+        
+        assert_eq!(prices.len(), 1);
+        assert!(prices.contains_key("UNKNOWN_TICKER"));
+        assert_eq!(*prices.get("UNKNOWN_TICKER").unwrap(), 100.0); // Default fallback price
+    }
+
+    #[tokio::test]
+    async fn test_fetch_current_prices_empty_list() {
+        let tickers = vec![];
+        let result = fetch_current_prices(&tickers).await;
+        
+        assert!(result.is_ok());
+        let prices = result.unwrap();
+        assert!(prices.is_empty());
+    }
+
+    #[tokio::test]
+    async fn test_fetch_current_prices_mixed_known_unknown() {
+        let tickers = vec!["AAPL".to_string(), "UNKNOWN".to_string(), "BTC-USD".to_string()];
+        let result = fetch_current_prices(&tickers).await;
+        
+        assert!(result.is_ok());
+        let prices = result.unwrap();
+        
+        assert_eq!(prices.len(), 3);
+        assert_eq!(*prices.get("AAPL").unwrap(), 170.0);
+        assert_eq!(*prices.get("UNKNOWN").unwrap(), 100.0);
+        assert_eq!(*prices.get("BTC-USD").unwrap(), 95000.0);
+    }
+}

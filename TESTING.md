@@ -1,0 +1,73 @@
+# Testing Documentation
+
+This project includes comprehensive unit tests, integration tests, and benchmarks.
+
+## Running Tests
+
+### All Tests
+```bash
+cargo test
+```
+
+### Unit Tests Only
+```bash
+cargo test --lib
+```
+
+### Integration Tests Only
+```bash
+cargo test --test integration_tests
+```
+
+### Benchmark Tests
+```bash
+cargo test benchmark_portfolio_processing -- --nocapture
+```
+
+### Test Coverage
+To see test coverage, you can use cargo-tarpaulin:
+```bash
+cargo install cargo-tarpaulin
+cargo tarpaulin
+```
+
+## Test Structure
+
+### Unit Tests (`src/` modules)
+- **Portfolio Tests** (`src/portfolio.rs`): Test all portfolio calculations, file loading, and data structures
+- **API Tests** (`src/api.rs`): Test price fetching functionality with mock data
+
+### Integration Tests (`tests/` directory)
+- **Integration Tests** (`tests/integration_tests.rs`): End-to-end testing of portfolio loading and price calculations
+- **Benchmark Tests** (`tests/benchmark_tests.rs`): Performance testing with timing metrics
+
+## Test Coverage Areas
+
+### Portfolio Module Tests
+- `HoldingWithPrice` calculations (current value, total cost, gain/loss, percentages)
+- Portfolio loading from JSON files
+- Error handling for invalid files
+- Empty portfolios
+- Missing price data scenarios
+
+### API Module Tests
+- Mock price data retrieval
+- Handling unknown tickers
+- Empty ticker lists
+- Mixed known/unknown ticker scenarios
+
+### Integration Tests
+- Full workflow testing (file → portfolio → prices → calculations)
+- Real file I/O operations
+- Async price fetching
+- Performance benchmarking
+
+## Test Data
+Tests use temporary files and mock data to ensure they don't depend on external APIs or files.
+
+## Adding New Tests
+When adding new features, please include:
+1. Unit tests for individual functions
+2. Integration tests for complete workflows
+3. Error case testing
+4. Performance considerations for large portfolios
