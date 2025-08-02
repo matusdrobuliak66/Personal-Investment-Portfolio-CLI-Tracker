@@ -1,30 +1,27 @@
 # Personal Investment Portfolio CLI Tracker
 
-A command-line application for tracking your investment portfolio built in Rust.
+A complete Rust CLI application for tracking investment portfolios with colored terminal output.
 
 ## Features
 
-- **Balance Tracking**: View current holdings, quantities, prices, and total values
-- **Asset Allocation**: See percentage breakdown of your portfolio
-- **Performance Analysis**: Track gains/losses and returns since purchase
-- **JSON Portfolio Storage**: Simple file-based storage for your holdings
+✅ **CLI Interface**: Full command-line interface with clap
+✅ **Multiple Commands**: balances, allocation, performance
+✅ **JSON Portfolio Storage**: Simple file-based portfolio storage
+✅ **Portfolio Analysis**: 
+   - Current balances and values
+   - Asset allocation percentages
+   - Performance metrics with gains/losses
+✅ **Mock Price Data**: Built-in price data for stocks and crypto
+✅ **Colored Output**: Enhanced terminal output with colors
+✅ **Error Handling**: Comprehensive error handling with anyhow
+✅ **Multi-Asset Support**: Stocks and cryptocurrency support
 
-## Installation
+## Quick Start
 
-1. Make sure you have Rust installed: https://rustup.rs/
-2. Clone this repository
-3. Build the application:
-   ```bash
-   cargo build --release
-   ```
+1. **Build**: `cargo build --release` (requires Rust)
+2. **Run**: `./target/release/portfolio_rs balances portfolio.json`
 
-The binary will be available at `target/release/portfolio_rs`
-
-## Usage
-
-### Portfolio File Format
-
-Create a JSON file (e.g., `portfolio.json`) with your holdings:
+### Portfolio Format
 
 ```json
 [
@@ -35,7 +32,7 @@ Create a JSON file (e.g., `portfolio.json`) with your holdings:
     "date_purchased": "2024-06-01"
   },
   {
-    "ticker": "TSLA",
+    "ticker": "TSLA", 
     "quantity": 5,
     "cost_basis": 600,
     "date_purchased": "2024-05-10"
@@ -45,23 +42,16 @@ Create a JSON file (e.g., `portfolio.json`) with your holdings:
 
 ### Commands
 
-#### View Balances
 ```bash
+# View current balances
 portfolio_rs balances portfolio.json
-```
-Shows current holdings with live prices and total portfolio value.
 
-#### View Asset Allocation
-```bash
-portfolio_rs allocation portfolio.json
-```
-Displays percentage breakdown of your portfolio by ticker.
+# View asset allocation
+portfolio_rs allocation portfolio.json  
 
-#### View Performance
-```bash
+# View performance metrics
 portfolio_rs performance portfolio.json
 ```
-Shows gain/loss percentages and dollar amounts for each holding.
 
 ## Example Output
 
@@ -104,40 +94,40 @@ Total Return: +14.8%
 Total Gain/Loss: +2050.00
 ```
 
-## Price Data
-
-The application uses mock price data for demonstration purposes. In a production environment, you would:
-
-1. Sign up for a stock price API (Alpha Vantage, IEX Cloud, etc.)
-2. Add your API key to the `src/api.rs` file
-3. Replace the mock data with real API calls
-
 ## Development
 
-To run the application during development (without building a release binary):
-
+Run without building a release binary:
 ```bash
 cargo run -- balances portfolio.json
 cargo run -- allocation portfolio.json
 cargo run -- performance portfolio.json
 ```
 
-## Dependencies
+## Price Data
 
-- `clap`: Command-line argument parsing
-- `serde`: JSON serialization/deserialization
-- `reqwest`: HTTP client for API calls
-- `tokio`: Async runtime
-- `anyhow`: Error handling
-- `colored`: Terminal colors
-- `chrono`: Date/time handling
+Uses mock price data for demonstration. For production:
+1. Sign up for a stock price API (Alpha Vantage, IEX Cloud, etc.)
+2. Add your API key to `src/api.rs`
+3. Replace mock data with real API calls
+
+## Technologies Used / Dependencies
+
+- **Rust**: Core programming language
+- **Clap**: Command-line argument parsing
+- **Serde**: JSON serialization/deserialization
+- **Tokio**: Async runtime
+- **Reqwest**: HTTP client (prepared for real API integration)
+- **Colored**: Terminal color output
+- **Anyhow**: Error handling
+- **Chrono**: Date/time handling
+
 
 ## Future Enhancements
 
+- [ ] Real API integration
 - [ ] Encryption support for portfolio files
 - [ ] Historical performance tracking
 - [ ] Portfolio rebalancing suggestions
 - [ ] Support for multiple asset classes (bonds, crypto, etc.)
 - [ ] Export to CSV/Excel
 - [ ] Web dashboard
-- [ ] Real-time price updates
