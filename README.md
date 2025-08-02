@@ -4,17 +4,17 @@ A complete Rust CLI application for tracking investment portfolios with colored 
 
 ## Features
 
-✅ **CLI Interface**: Full command-line interface with clap
-✅ **Multiple Commands**: balances, allocation, performance
-✅ **JSON Portfolio Storage**: Simple file-based portfolio storage
-✅ **Portfolio Analysis**: 
+- ✅ **CLI Interface**: Full command-line interface with clap
+- ✅ **Multiple Commands**: balances, allocation, performance
+- ✅ **JSON Portfolio Storage**: Simple file-based portfolio storage
+- ✅ **Portfolio Analysis**: 
    - Current balances and values
    - Asset allocation percentages
    - Performance metrics with gains/losses
-✅ **Mock Price Data**: Built-in price data for stocks and crypto
-✅ **Colored Output**: Enhanced terminal output with colors
-✅ **Error Handling**: Comprehensive error handling with anyhow
-✅ **Multi-Asset Support**: Stocks and cryptocurrency support
+- ✅ **Mock Price Data**: Built-in price data for stocks and crypto
+- ✅ **Colored Output**: Enhanced terminal output with colors
+- ✅ **Error Handling**: Comprehensive error handling with anyhow
+- ✅ **Multi-Asset Support**: Stocks and cryptocurrency support
 
 ## Quick Start
 
