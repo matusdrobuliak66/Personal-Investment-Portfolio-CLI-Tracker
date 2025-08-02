@@ -71,3 +71,42 @@ When adding new features, please include:
 2. Integration tests for complete workflows
 3. Error case testing
 4. Performance considerations for large portfolios
+
+## Continuous Integration
+
+### GitHub Actions Workflow
+
+The project includes a simple GitHub Actions workflow (`.github/workflows/rust.yml`) for automated testing:
+
+- **Triggers**: Push to main branch, Pull Requests
+- **Workflow Steps**:
+  1. **Checkout code**: Gets the latest code
+  2. **Install Rust toolchain**: Sets up Rust stable version
+  3. **Cache dependencies**: Speeds up builds by caching Cargo dependencies
+  4. **Build project**: Compiles the code with `cargo build --verbose`
+  5. **Run tests**: Executes all tests with `cargo test --verbose`
+
+### Running Tests Locally Before Push
+
+To ensure your changes will pass CI, run these commands locally:
+
+```bash
+# Build the project
+cargo build --verbose
+
+# Run all tests
+cargo test --verbose
+```
+
+### Viewing Test Results
+
+- **GitHub Actions**: Go to the "Actions" tab in your repository to see test results
+- **Pull Requests**: Test status is automatically shown on each PR
+
+### Test Status Badge
+
+You can add this badge to your README.md to show the current test status:
+
+```markdown
+![Rust CI](https://github.com/matusdrobuliak66/Personal-Investment-Portfolio-CLI-Tracker/workflows/Rust%20CI/badge.svg)
+```
